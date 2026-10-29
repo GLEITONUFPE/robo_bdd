@@ -1,0 +1,14 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "meu_robo_bdd"
+version = "0.1.0"
+description = "Automação de testes BDD para robótica usando PyBullet"
+authors = [{name = "Gleiton"}]
+dependencies = [
+    "behave",
+    "pybullet",
+    "numpy"
+]

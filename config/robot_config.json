@@ -1,0 +1,17 @@
+{
+    "default_simulator": "pybullet",
+    "robots": {
+        "kuka": {
+            "urdf_path": "kuka_iiwa/model.urdf",
+            "end_effector_index": 6
+        },
+        "niryo_one": {
+            "urdf_path": "niryo_one.urdf",
+            "end_effector_index": 7
+        },
+        "kinova": {
+            "urdf_path": "kinova.urdf",
+            "end_effector_index": 8
+        }
+    }
+}
