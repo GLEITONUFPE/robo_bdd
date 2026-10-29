@@ -1,12 +1,26 @@
-from behave import given, when, then
-import sys
 import os
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
-from robot_simulator import RobotSimulator
+import sys
+# Adiciona o diretório raiz do projeto ao path para importar 'src' com sucesso
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))
+
+from behave import given, when, then
+from src.simulators.pybullet_adapter import PyBulletAdapter
+from src.simulators.coppeliasim_adapter import CoppeliaSimAdapter
+
+def get_simulator():
+    engine = os.getenv("SIMULATOR", "pybullet").lower()
+    
+    if engine == "pybullet":
+        return PyBulletAdapter(urdf_path="kuka_iiwa/model.urdf")
+    elif engine == "coppeliasim":
+        return CoppeliaSimAdapter(scene_path="cenas/teste.ttt")
+    else:
+        raise ValueError(f"Simulador '{engine}' não suportado.")
 
 @given('que o braço robótico está inicializado no simulador')
 def step_init_sim(context):
-    context.robot = RobotSimulator()
+    context.robot = get_simulator()
+    context.robot.connect()
     context.current_x = 0
     context.current_y = 0
     context.current_z = 0
@@ -17,7 +31,7 @@ def step_init_sim(context):
 
 @given('a garra está aberta')
 def step_garra_aberta(context):
-    pass # Estado inicial padrão
+    pass
 
 @when('o robô move a garra para a coordenada X: {x:f}, Y: {y:f}, Z: {z:f}')
 def step_move_xyz(context, x, y, z):
@@ -54,5 +68,5 @@ def step_sucesso(context):
 
 @then('nenhuma mensagem de "movimento impossível" deve ser exibida')
 def step_sem_erro_impossivel(context):
-    context.robot.disconnect() # Limpa a simulação no final
+    context.robot.disconnect()
     assert context.error is None, "Um movimento impossível foi detectado durante o teste!"
